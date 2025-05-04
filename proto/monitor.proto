@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package monitor;
 
+option go_package = "github.com/nerfthisdev/kronos-server/proto;monitorpb";
+
 service MonitorService {
   rpc GetStats(StatsRequest) returns (StatsResponse);
   rpc StreamStats(StatsRequest) returns (StatsResponse);
