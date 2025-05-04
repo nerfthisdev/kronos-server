@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package monitor;
+
+service MonitorService {
+  rpc GetStats(StatsRequest) returns (StatsResponse);
+  rpc StreamStats(StatsRequest) returns (StatsResponse);
+}
+
+message StatsRequest {}
+
+message StatsResponse {
+  double cpu_usage = 1;
+  double memory_usage = 2;
+  double disk_usage = 3;
+}
