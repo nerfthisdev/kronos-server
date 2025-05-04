@@ -79,10 +79,13 @@ func GetCpuStats() (CPUStats, error) {
 	}
 
 	for cpu := range s1 {
+
 		idle1 := s1[cpu][3]
 		idle2 := s2[cpu][3]
+
 		total1 := sumSlice(s1[cpu])
 		total2 := sumSlice(s2[cpu])
+
 		usage := 1.0 - float64(idle2-idle1)/float64(total2-total1)
 		usage *= 100.0
 
