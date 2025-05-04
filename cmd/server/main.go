@@ -3,6 +3,9 @@ package main
 import (
 	"log"
 	"net"
+	"sort"
+	"strconv"
+	"strings"
 	"time"
 
 	"github.com/nerfthisdev/kronos-server/internal/cpu"
@@ -27,7 +30,19 @@ func (s *monitorServer) StreamStats(_ *pb.StatsRequest, stream grpc.ServerStream
 				return err
 			}
 			var cores []*pb.CPUCoreUsage
-			for core, usage := range stats.CoresUsage {
+
+			keys := make([]string, 0, len(stats.CoresUsage))
+			for k := range stats.CoresUsage {
+				keys = append(keys, k)
+			}
+			sort.Slice(keys, func(i, j int) bool {
+				numI, _ := strconv.Atoi(strings.TrimPrefix(keys[i], "cpu"))
+				numJ, _ := strconv.Atoi(strings.TrimPrefix(keys[j], "cpu"))
+				return numI < numJ
+			})
+
+			for _, core := range keys {
+				usage := stats.CoresUsage[core]
 				cores = append(cores, &pb.CPUCoreUsage{
 					Core:  core,
 					Usage: usage,
