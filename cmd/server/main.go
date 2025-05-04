@@ -8,7 +8,6 @@ import (
 	"github.com/nerfthisdev/kronos-server/internal/cpu"
 	pb "github.com/nerfthisdev/kronos-server/proto"
 	"google.golang.org/grpc"
-	"google.golang.org/protobuf/types/known/emptypb"
 )
 
 type monitorServer struct {
