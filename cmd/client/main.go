@@ -1,8 +1,9 @@
-package client
+package main
 
 import (
 	"context"
 	"log"
+	"time"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -35,7 +36,7 @@ func main() {
 
 		cpuStats := resp.CpuUsageTotal
 
-		log.Printf("Total: %.2f%%, BTime: %d", cpuStats.TotalUsage, cpuStats.Btime)
+		log.Printf("Total: %.2f%%, BTime: %s", cpuStats.TotalUsage, time.Unix(int64(cpuStats.Btime), 0))
 		for _, core := range cpuStats.CoresUsage {
 			log.Printf("Core %s: %.2f%%", core.Core, core.Usage)
 		}
