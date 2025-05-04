@@ -28,7 +28,7 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type MonitorServiceClient interface {
 	GetStats(ctx context.Context, in *StatsRequest, opts ...grpc.CallOption) (*StatsResponse, error)
-	StreamStats(ctx context.Context, in *StatsRequest, opts ...grpc.CallOption) (*StatsResponse, error)
+	StreamStats(ctx context.Context, in *StatsRequest, opts ...grpc.CallOption) (grpc.ServerStreamingClient[StatsResponse], error)
 }
 
 type monitorServiceClient struct {
@@ -49,22 +49,31 @@ func (c *monitorServiceClient) GetStats(ctx context.Context, in *StatsRequest, o
 	return out, nil
 }
 
-func (c *monitorServiceClient) StreamStats(ctx context.Context, in *StatsRequest, opts ...grpc.CallOption) (*StatsResponse, error) {
+func (c *monitorServiceClient) StreamStats(ctx context.Context, in *StatsRequest, opts ...grpc.CallOption) (grpc.ServerStreamingClient[StatsResponse], error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(StatsResponse)
-	err := c.cc.Invoke(ctx, MonitorService_StreamStats_FullMethodName, in, out, cOpts...)
+	stream, err := c.cc.NewStream(ctx, &MonitorService_ServiceDesc.Streams[0], MonitorService_StreamStats_FullMethodName, cOpts...)
 	if err != nil {
 		return nil, err
 	}
-	return out, nil
+	x := &grpc.GenericClientStream[StatsRequest, StatsResponse]{ClientStream: stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
 }
+
+// This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
+type MonitorService_StreamStatsClient = grpc.ServerStreamingClient[StatsResponse]
 
 // MonitorServiceServer is the server API for MonitorService service.
 // All implementations must embed UnimplementedMonitorServiceServer
 // for forward compatibility.
 type MonitorServiceServer interface {
 	GetStats(context.Context, *StatsRequest) (*StatsResponse, error)
-	StreamStats(context.Context, *StatsRequest) (*StatsResponse, error)
+	StreamStats(*StatsRequest, grpc.ServerStreamingServer[StatsResponse]) error
 	mustEmbedUnimplementedMonitorServiceServer()
 }
 
@@ -78,8 +87,8 @@ type UnimplementedMonitorServiceServer struct{}
 func (UnimplementedMonitorServiceServer) GetStats(context.Context, *StatsRequest) (*StatsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetStats not implemented")
 }
-func (UnimplementedMonitorServiceServer) StreamStats(context.Context, *StatsRequest) (*StatsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method StreamStats not implemented")
+func (UnimplementedMonitorServiceServer) StreamStats(*StatsRequest, grpc.ServerStreamingServer[StatsResponse]) error {
+	return status.Errorf(codes.Unimplemented, "method StreamStats not implemented")
 }
 func (UnimplementedMonitorServiceServer) mustEmbedUnimplementedMonitorServiceServer() {}
 func (UnimplementedMonitorServiceServer) testEmbeddedByValue()                        {}
@@ -120,23 +129,16 @@ func _MonitorService_GetStats_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
-func _MonitorService_StreamStats_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(StatsRequest)
-	if err := dec(in); err != nil {
-		return nil, err
+func _MonitorService_StreamStats_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(StatsRequest)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
 	}
-	if interceptor == nil {
-		return srv.(MonitorServiceServer).StreamStats(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: MonitorService_StreamStats_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MonitorServiceServer).StreamStats(ctx, req.(*StatsRequest))
-	}
-	return interceptor(ctx, in, info, handler)
+	return srv.(MonitorServiceServer).StreamStats(m, &grpc.GenericServerStream[StatsRequest, StatsResponse]{ServerStream: stream})
 }
+
+// This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
+type MonitorService_StreamStatsServer = grpc.ServerStreamingServer[StatsResponse]
 
 // MonitorService_ServiceDesc is the grpc.ServiceDesc for MonitorService service.
 // It's only intended for direct use with grpc.RegisterService,
@@ -149,11 +151,13 @@ var MonitorService_ServiceDesc = grpc.ServiceDesc{
 			MethodName: "GetStats",
 			Handler:    _MonitorService_GetStats_Handler,
 		},
+	},
+	Streams: []grpc.StreamDesc{
 		{
-			MethodName: "StreamStats",
-			Handler:    _MonitorService_StreamStats_Handler,
+			StreamName:    "StreamStats",
+			Handler:       _MonitorService_StreamStats_Handler,
+			ServerStreams: true,
 		},
 	},
-	Streams:  []grpc.StreamDesc{},
 	Metadata: "proto/monitor.proto",
 }

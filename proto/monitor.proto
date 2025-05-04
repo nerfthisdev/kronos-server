@@ -6,13 +6,24 @@ option go_package = "github.com/nerfthisdev/kronos-server/proto;monitorpb";
 
 service MonitorService {
   rpc GetStats(StatsRequest) returns (StatsResponse);
-  rpc StreamStats(StatsRequest) returns (StatsResponse);
+  rpc StreamStats(StatsRequest) returns (stream StatsResponse);
 }
 
 message StatsRequest {}
 
+message CPUCoreUsage {
+  string core = 1;
+  double usage = 2;
+}
+
+message CPUStatsResponse {
+  double total_usage = 1;
+  repeated CPUCoreUsage cores_usage = 2;
+  uint64 btime = 3;
+}
+
 message StatsResponse {
-  double cpu_usage = 1;
+  CPUStatsResponse cpu_usage_total = 1;
   double memory_usage = 2;
   double disk_usage = 3;
 }
