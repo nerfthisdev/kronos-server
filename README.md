@@ -1,1 +1,1 @@
-## Server rewrite in go
+## Server usage stats written with go using gRPC
