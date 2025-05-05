@@ -9,6 +9,8 @@ import (
 	"time"
 
 	"github.com/nerfthisdev/kronos-server/internal/cpu"
+	"github.com/nerfthisdev/kronos-server/internal/disk"
+	"github.com/nerfthisdev/kronos-server/internal/memory"
 	pb "github.com/nerfthisdev/kronos-server/proto"
 	"google.golang.org/grpc"
 )
@@ -24,15 +26,28 @@ func (s *monitorServer) StreamStats(_ *pb.StatsRequest, stream grpc.ServerStream
 	for {
 		select {
 		case <-ticker.C:
-			stats, err := cpu.GetCpuStats()
+			cpuStats, err := cpu.GetCpuStats()
 
 			if err != nil {
 				return err
 			}
+
+			memoryStats, err := memory.GetMemoryStats()
+
+			if err != nil {
+				return err
+			}
+
+			diskStats, err := disk.GetDiskStats("/")
+
+			if err != nil {
+				return err
+			}
+
 			var cores []*pb.CPUCoreUsage
 
-			keys := make([]string, 0, len(stats.CoresUsage))
-			for k := range stats.CoresUsage {
+			keys := make([]string, 0, len(cpuStats.CoresUsage))
+			for k := range cpuStats.CoresUsage {
 				keys = append(keys, k)
 			}
 			sort.Slice(keys, func(i, j int) bool {
@@ -42,22 +57,26 @@ func (s *monitorServer) StreamStats(_ *pb.StatsRequest, stream grpc.ServerStream
 			})
 
 			for _, core := range keys {
-				usage := stats.CoresUsage[core]
+				usage := cpuStats.CoresUsage[core]
 				cores = append(cores, &pb.CPUCoreUsage{
 					Core:  core,
 					Usage: usage,
 				})
 			}
 			cpuResp := &pb.CPUStatsResponse{
-				TotalUsage: stats.TotalUsage,
-				Btime:      stats.BTime,
+				TotalUsage: cpuStats.TotalUsage,
+				Btime:      cpuStats.BTime,
 				CoresUsage: cores,
 			}
 
+			memoryResp := &pb.MemoryUsage{Total: memoryStats.MemTotal, Used: memoryStats.MemUsed}
+
+			diskResp := &pb.DiskUsage{Total: diskStats.Total, Used: diskStats.Used}
+
 			resp := &pb.StatsResponse{
 				CpuUsageTotal: cpuResp,
-				MemoryUsage:   0,
-				DiskUsage:     0,
+				MemoryUsage:   memoryResp,
+				DiskUsage:     diskResp,
 			}
 			if err := stream.Send(resp); err != nil {
 				return err
