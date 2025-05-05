@@ -23,7 +23,7 @@ message Memory_usage {
 
 message Disk_usage {
   uint64 total = 1;
-  uint64 used = 1;
+  uint64 used = 2;
 }
 
 message CPUStatsResponse {
