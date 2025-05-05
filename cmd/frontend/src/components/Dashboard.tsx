@@ -1,7 +1,8 @@
 import  { useEffect, useState } from 'react';
 import { LineChart, Line, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { MonitorServiceClient } from '../proto/MonitorServiceClientPb';
-import * as pb from '../proto/monitor_pb';
+import { StatsRequest, StatsResponse } from '../proto/monitor_pb';
+;
 
 const client = new MonitorServiceClient('http://localhost:8080');
 
@@ -17,10 +18,10 @@ const Dashboard = () => {
   const [data, setData] = useState<DataPoint[]>([]);
 
   useEffect(() => {
-    const request = new pb.StatsRequest();
+    const request = new StatsRequest();
     const stream = client.streamStats(request);
 
-    stream.on('data', (response: pb.StatsResponse) => {
+    stream.on('data', (response: StatsResponse) => {
       const cpuUsage = response.getCpuUsageTotal()?.getTotalUsage() ?? 0;
       const memoryUsage = response.getMemoryUsage()?.getUsed() ?? 0;
       const diskUsage = response.getDiskUsage()?.getUsed() ?? 0;
