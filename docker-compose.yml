@@ -1,0 +1,17 @@
+version: "3.7"
+
+services:
+  backend:
+    image: kronos-backend
+    ports:
+      - "50051:50051"
+
+  grpc-web:
+    image: improbable/grpc-web
+    command: >
+      /grpcwebproxy
+      --backend_addr=backend:50051
+      --run_tls_server=false
+      --allow_all_origins
+    ports:
+      - "8080:8080"
