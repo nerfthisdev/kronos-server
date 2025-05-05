@@ -109,6 +109,110 @@ func (x *CPUCoreUsage) GetUsage() float64 {
 	return 0
 }
 
+type MemoryUsage struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Total         uint64                 `protobuf:"varint,1,opt,name=total,proto3" json:"total,omitempty"`
+	Used          uint64                 `protobuf:"varint,2,opt,name=used,proto3" json:"used,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *MemoryUsage) Reset() {
+	*x = MemoryUsage{}
+	mi := &file_proto_monitor_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *MemoryUsage) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*MemoryUsage) ProtoMessage() {}
+
+func (x *MemoryUsage) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_monitor_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use MemoryUsage.ProtoReflect.Descriptor instead.
+func (*MemoryUsage) Descriptor() ([]byte, []int) {
+	return file_proto_monitor_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *MemoryUsage) GetTotal() uint64 {
+	if x != nil {
+		return x.Total
+	}
+	return 0
+}
+
+func (x *MemoryUsage) GetUsed() uint64 {
+	if x != nil {
+		return x.Used
+	}
+	return 0
+}
+
+type DiskUsage struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Total         uint64                 `protobuf:"varint,1,opt,name=total,proto3" json:"total,omitempty"`
+	Used          uint64                 `protobuf:"varint,2,opt,name=used,proto3" json:"used,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DiskUsage) Reset() {
+	*x = DiskUsage{}
+	mi := &file_proto_monitor_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DiskUsage) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DiskUsage) ProtoMessage() {}
+
+func (x *DiskUsage) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_monitor_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DiskUsage.ProtoReflect.Descriptor instead.
+func (*DiskUsage) Descriptor() ([]byte, []int) {
+	return file_proto_monitor_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *DiskUsage) GetTotal() uint64 {
+	if x != nil {
+		return x.Total
+	}
+	return 0
+}
+
+func (x *DiskUsage) GetUsed() uint64 {
+	if x != nil {
+		return x.Used
+	}
+	return 0
+}
+
 type CPUStatsResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	TotalUsage    float64                `protobuf:"fixed64,1,opt,name=total_usage,json=totalUsage,proto3" json:"total_usage,omitempty"`
@@ -120,7 +224,7 @@ type CPUStatsResponse struct {
 
 func (x *CPUStatsResponse) Reset() {
 	*x = CPUStatsResponse{}
-	mi := &file_proto_monitor_proto_msgTypes[2]
+	mi := &file_proto_monitor_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -132,7 +236,7 @@ func (x *CPUStatsResponse) String() string {
 func (*CPUStatsResponse) ProtoMessage() {}
 
 func (x *CPUStatsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_monitor_proto_msgTypes[2]
+	mi := &file_proto_monitor_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -145,7 +249,7 @@ func (x *CPUStatsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CPUStatsResponse.ProtoReflect.Descriptor instead.
 func (*CPUStatsResponse) Descriptor() ([]byte, []int) {
-	return file_proto_monitor_proto_rawDescGZIP(), []int{2}
+	return file_proto_monitor_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *CPUStatsResponse) GetTotalUsage() float64 {
@@ -172,15 +276,15 @@ func (x *CPUStatsResponse) GetBtime() uint64 {
 type StatsResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	CpuUsageTotal *CPUStatsResponse      `protobuf:"bytes,1,opt,name=cpu_usage_total,json=cpuUsageTotal,proto3" json:"cpu_usage_total,omitempty"`
-	MemoryUsage   float64                `protobuf:"fixed64,2,opt,name=memory_usage,json=memoryUsage,proto3" json:"memory_usage,omitempty"`
-	DiskUsage     float64                `protobuf:"fixed64,3,opt,name=disk_usage,json=diskUsage,proto3" json:"disk_usage,omitempty"`
+	MemoryUsage   *MemoryUsage           `protobuf:"bytes,2,opt,name=memory_usage,json=memoryUsage,proto3" json:"memory_usage,omitempty"`
+	DiskUsage     *DiskUsage             `protobuf:"bytes,3,opt,name=disk_usage,json=diskUsage,proto3" json:"disk_usage,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *StatsResponse) Reset() {
 	*x = StatsResponse{}
-	mi := &file_proto_monitor_proto_msgTypes[3]
+	mi := &file_proto_monitor_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -192,7 +296,7 @@ func (x *StatsResponse) String() string {
 func (*StatsResponse) ProtoMessage() {}
 
 func (x *StatsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_monitor_proto_msgTypes[3]
+	mi := &file_proto_monitor_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -205,7 +309,7 @@ func (x *StatsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use StatsResponse.ProtoReflect.Descriptor instead.
 func (*StatsResponse) Descriptor() ([]byte, []int) {
-	return file_proto_monitor_proto_rawDescGZIP(), []int{3}
+	return file_proto_monitor_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *StatsResponse) GetCpuUsageTotal() *CPUStatsResponse {
@@ -215,18 +319,18 @@ func (x *StatsResponse) GetCpuUsageTotal() *CPUStatsResponse {
 	return nil
 }
 
-func (x *StatsResponse) GetMemoryUsage() float64 {
+func (x *StatsResponse) GetMemoryUsage() *MemoryUsage {
 	if x != nil {
 		return x.MemoryUsage
 	}
-	return 0
+	return nil
 }
 
-func (x *StatsResponse) GetDiskUsage() float64 {
+func (x *StatsResponse) GetDiskUsage() *DiskUsage {
 	if x != nil {
 		return x.DiskUsage
 	}
-	return 0
+	return nil
 }
 
 var File_proto_monitor_proto protoreflect.FileDescriptor
@@ -237,18 +341,25 @@ const file_proto_monitor_proto_rawDesc = "" +
 	"\fStatsRequest\"8\n" +
 	"\fCPUCoreUsage\x12\x12\n" +
 	"\x04core\x18\x01 \x01(\tR\x04core\x12\x14\n" +
-	"\x05usage\x18\x02 \x01(\x01R\x05usage\"\x81\x01\n" +
+	"\x05usage\x18\x02 \x01(\x01R\x05usage\"8\n" +
+	"\fMemory_usage\x12\x14\n" +
+	"\x05total\x18\x01 \x01(\x04R\x05total\x12\x12\n" +
+	"\x04used\x18\x02 \x01(\x04R\x04used\"6\n" +
+	"\n" +
+	"Disk_usage\x12\x14\n" +
+	"\x05total\x18\x01 \x01(\x04R\x05total\x12\x12\n" +
+	"\x04used\x18\x02 \x01(\x04R\x04used\"\x81\x01\n" +
 	"\x10CPUStatsResponse\x12\x1f\n" +
 	"\vtotal_usage\x18\x01 \x01(\x01R\n" +
 	"totalUsage\x126\n" +
 	"\vcores_usage\x18\x02 \x03(\v2\x15.monitor.CPUCoreUsageR\n" +
 	"coresUsage\x12\x14\n" +
-	"\x05btime\x18\x03 \x01(\x04R\x05btime\"\x94\x01\n" +
+	"\x05btime\x18\x03 \x01(\x04R\x05btime\"\xc0\x01\n" +
 	"\rStatsResponse\x12A\n" +
-	"\x0fcpu_usage_total\x18\x01 \x01(\v2\x19.monitor.CPUStatsResponseR\rcpuUsageTotal\x12!\n" +
-	"\fmemory_usage\x18\x02 \x01(\x01R\vmemoryUsage\x12\x1d\n" +
+	"\x0fcpu_usage_total\x18\x01 \x01(\v2\x19.monitor.CPUStatsResponseR\rcpuUsageTotal\x128\n" +
+	"\fmemory_usage\x18\x02 \x01(\v2\x15.monitor.Memory_usageR\vmemoryUsage\x122\n" +
 	"\n" +
-	"disk_usage\x18\x03 \x01(\x01R\tdiskUsage2\x8b\x01\n" +
+	"disk_usage\x18\x03 \x01(\v2\x13.monitor.Disk_usageR\tdiskUsage2\x8b\x01\n" +
 	"\x0eMonitorService\x129\n" +
 	"\bGetStats\x12\x15.monitor.StatsRequest\x1a\x16.monitor.StatsResponse\x12>\n" +
 	"\vStreamStats\x12\x15.monitor.StatsRequest\x1a\x16.monitor.StatsResponse0\x01B6Z4github.com/nerfthisdev/kronos-server/proto;monitorpbb\x06proto3"
@@ -265,25 +376,29 @@ func file_proto_monitor_proto_rawDescGZIP() []byte {
 	return file_proto_monitor_proto_rawDescData
 }
 
-var file_proto_monitor_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
+var file_proto_monitor_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
 var file_proto_monitor_proto_goTypes = []any{
 	(*StatsRequest)(nil),     // 0: monitor.StatsRequest
 	(*CPUCoreUsage)(nil),     // 1: monitor.CPUCoreUsage
-	(*CPUStatsResponse)(nil), // 2: monitor.CPUStatsResponse
-	(*StatsResponse)(nil),    // 3: monitor.StatsResponse
+	(*MemoryUsage)(nil),      // 2: monitor.Memory_usage
+	(*DiskUsage)(nil),        // 3: monitor.Disk_usage
+	(*CPUStatsResponse)(nil), // 4: monitor.CPUStatsResponse
+	(*StatsResponse)(nil),    // 5: monitor.StatsResponse
 }
 var file_proto_monitor_proto_depIdxs = []int32{
 	1, // 0: monitor.CPUStatsResponse.cores_usage:type_name -> monitor.CPUCoreUsage
-	2, // 1: monitor.StatsResponse.cpu_usage_total:type_name -> monitor.CPUStatsResponse
-	0, // 2: monitor.MonitorService.GetStats:input_type -> monitor.StatsRequest
-	0, // 3: monitor.MonitorService.StreamStats:input_type -> monitor.StatsRequest
-	3, // 4: monitor.MonitorService.GetStats:output_type -> monitor.StatsResponse
-	3, // 5: monitor.MonitorService.StreamStats:output_type -> monitor.StatsResponse
-	4, // [4:6] is the sub-list for method output_type
-	2, // [2:4] is the sub-list for method input_type
-	2, // [2:2] is the sub-list for extension type_name
-	2, // [2:2] is the sub-list for extension extendee
-	0, // [0:2] is the sub-list for field type_name
+	4, // 1: monitor.StatsResponse.cpu_usage_total:type_name -> monitor.CPUStatsResponse
+	2, // 2: monitor.StatsResponse.memory_usage:type_name -> monitor.Memory_usage
+	3, // 3: monitor.StatsResponse.disk_usage:type_name -> monitor.Disk_usage
+	0, // 4: monitor.MonitorService.GetStats:input_type -> monitor.StatsRequest
+	0, // 5: monitor.MonitorService.StreamStats:input_type -> monitor.StatsRequest
+	5, // 6: monitor.MonitorService.GetStats:output_type -> monitor.StatsResponse
+	5, // 7: monitor.MonitorService.StreamStats:output_type -> monitor.StatsResponse
+	6, // [6:8] is the sub-list for method output_type
+	4, // [4:6] is the sub-list for method input_type
+	4, // [4:4] is the sub-list for extension type_name
+	4, // [4:4] is the sub-list for extension extendee
+	0, // [0:4] is the sub-list for field type_name
 }
 
 func init() { file_proto_monitor_proto_init() }
@@ -297,7 +412,7 @@ func file_proto_monitor_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_proto_monitor_proto_rawDesc), len(file_proto_monitor_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   4,
+			NumMessages:   6,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
