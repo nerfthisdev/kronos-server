@@ -16,6 +16,16 @@ message CPUCoreUsage {
   double usage = 2;
 }
 
+message Memory_usage {
+  uint64 total = 1;
+  uint64 used = 2;
+}
+
+message Disk_usage {
+  uint64 total = 1;
+  uint64 used = 1;
+}
+
 message CPUStatsResponse {
   double total_usage = 1;
   repeated CPUCoreUsage cores_usage = 2;
@@ -24,6 +34,6 @@ message CPUStatsResponse {
 
 message StatsResponse {
   CPUStatsResponse cpu_usage_total = 1;
-  double memory_usage = 2;
-  double disk_usage = 3;
+  Memory_usage memory_usage = 2;
+  Disk_usage disk_usage = 3;
 }
